@@ -2,6 +2,7 @@
 
 namespace MyProject\Controllers;
 
+use MyProject\Models\Articles\Article;
 use Myproject\View\View;
 use Myproject\Services\Db;
 
@@ -25,7 +26,8 @@ class MainController
         ];
         $this->view->renderHtml('main/main.php', ['articles' => $articles, 'title' => 'Мой блог']);
     */
-        $articles = $this->db->query('SELECT * FROM`articles`;');
+
+        $articles = $this->db->query('SELECT * FROM`articles`;', [], Article::class);
         $this->view->renderHtml('main/main.php', ['articles' => $articles, 'title' => 'Мой блог']);
     }
 

@@ -6,29 +6,53 @@ use MyProject\Models\Users\User;
 
 class Article
 {
-    private $title;
-    private $text;
-    private $author;
 
-    public function __construct(string $title, string $text, User $author)
+    private int $id;
+
+    private string $name;
+
+    private string $text;
+
+    private int $authorId;
+
+    private string $createdAt;
+
+    public function __set($name, $value)
     {
-        $this->title = $title;
-        $this->text = $text;
-        $this->author = $author;
+        $camelCaseName = $this->underscoreToCamelCase($name);
+        $this->$camelCaseName = $value;
     }
 
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
+    /**
+     * @return string
+     */
     public function getText(): string
     {
         return $this->text;
     }
 
-    public function getAuthor(): User
+    /**
+     * @return string
+     */
+    public function getName(): string
     {
-        return $this->author;
+        return $this->name;
     }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function underscoreToCamelCase($name)
+    {
+        $str = str_replace('_', '', ucwords($name,'_'));
+        $str = lcfirst($str);
+        return $str;
+    }
+
+
 }
