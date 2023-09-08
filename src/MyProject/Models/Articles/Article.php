@@ -17,6 +17,22 @@ class Article extends ActiveRecordEntity
     protected string $createdAt;
 
     /**
+     * @param string $name
+     */
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @param string $text
+     */
+    public function setText(string $text): void
+    {
+        $this->text = $text;
+    }
+
+    /**
      * @return string
      */
     public function getName(): string
