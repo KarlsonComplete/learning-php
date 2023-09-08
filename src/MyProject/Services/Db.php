@@ -1,13 +1,17 @@
 <?php
 
 namespace Myproject\Services;
+use PDO;
 
 class Db
 {
-    private $pdo;
+    private PDO $pdo;
 
-    public function __construct()
+    private static $instance;
+
+    private function __construct()
     {
+
         $dbPathOptions  = (require __DIR__ . '/../../settings.php')['db'];
 
         $this->pdo = new \PDO(
@@ -16,6 +20,14 @@ class Db
             $dbPathOptions['password']
         );
         $this->pdo->exec('SET NAMES UTF8');
+    }
+
+    public static function getInstance(): self
+    {
+        if (self::$instance === null){
+            self::$instance = new self();
+        }
+        return self::$instance;
     }
 
     public function query(string $sql, $params = [], string $className = 'stdClass'): ?array
