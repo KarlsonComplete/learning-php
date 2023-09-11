@@ -41,4 +41,19 @@ class Db
         }
         return $sth->fetchAll(\PDO::FETCH_CLASS, $className);
     }
+
+    public function lastInsertId(string $sql): string|false
+    {
+        $lastId = $this->pdo->lastInsertId($sql);
+
+        if (false === $lastId)
+        {
+            return false;
+        }
+
+        return $lastId;
+
+    }
+
+
 }

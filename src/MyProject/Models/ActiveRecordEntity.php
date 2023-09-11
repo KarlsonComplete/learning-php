@@ -2,11 +2,12 @@
 
 namespace Myproject\Models;
 
+use MyProject\Models\Articles\Article;
 use Myproject\Services\Db;
 
 abstract class ActiveRecordEntity
 {
-    protected int $id;
+    protected ?int $id = null;
 
     public function getId(): int
     {
@@ -25,19 +26,14 @@ abstract class ActiveRecordEntity
         return $db->query('SELECT * FROM `' . static::getTableName() . '`;', [], static::class);
     }
 
-    public function save(): void
+    public function save(): bool|string|array
     {
         $mappedProperties = $this->mapPropertiesToDbFormat();
-        if ($this->id !== null) {
-            $this->update($mappedProperties);
-        } else {
-            $this->insert($mappedProperties);
+        if($this->id !== null) {
+          return $this->update($mappedProperties);
         }
-        /*$db = Db::getInstance();
-        $edits = $db->query(
-            'UPDATE ' . static::getTableName() . ' SET `name` =  Статья о том, как я погулял'
-        );
-        return $edits;*/
+
+        return  $this->insert($mappedProperties);
     }
 
     private function mapPropertiesToDbFormat(): array
@@ -66,9 +62,8 @@ abstract class ActiveRecordEntity
         return $entities ? $entities[0] : null;
     }
 
-    private function update(array $mappedProperties): void
+    private function update(array $mappedProperties): ?array
     {
-
         $columns2params = [];
         $params2values = [];
         $index = 1;
@@ -79,15 +74,31 @@ abstract class ActiveRecordEntity
             $index++;
         }
         $sql = 'UPDATE ' . static::getTableName() . ' SET ' . implode(', ', $columns2params) . ' WHERE id = ' . $this->id;
-        $db = Db::getInstance();
-        $db->query(
+        var_dump($sql);
+        return Db::getInstance()->query(
             $sql, $params2values, static::class
         );
     }
 
-    private function insert(array $mappedProperties): void
+    private function insert(array $mappedProperties): string|bool
     {
-        //здесь мы создаём новую запись в базе
+        $params = [];
+        $params2values = [];
+        $columns = [];
+        $index = 1;
+        foreach ($mappedProperties as $column => $value) {
+            $columns[] = $column;
+            $param = ':param' . $index;
+            $params[] = $param; // param1
+            $params2values[$param] = $value; // [param1 => value1]
+            $index++;
+        }
+
+        $sql = 'INSERT INTO ' . static::getTableName() . '(' . implode(' , ', $columns) . ') VALUES(' . implode(' , ', $params) . ')';
+        $db = Db::getInstance();
+        $db->query($sql, $params2values, static::class);
+        return $db->lastInsertId($sql);
+
     }
 
     private function underscoreToCamelCase(string $name): string

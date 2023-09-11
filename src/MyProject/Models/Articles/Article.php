@@ -12,9 +12,9 @@ class Article extends ActiveRecordEntity
 
     protected string $text;
 
-    protected int $authorId;
+    protected ?int $authorId = null;
 
-    protected string $createdAt;
+    protected ?string $createdAt = null;
 
     /**
      * @param string $name
@@ -49,7 +49,23 @@ class Article extends ActiveRecordEntity
 
     public function getAuthorId(): int
     {
-        return (int)$this->authorId;
+        return $this->authorId;
+    }
+
+    /**
+     * @param string $createdAt
+     */
+    public function setCreatedAt(string $createdAt): void
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @param int $authorId
+     */
+    public function setAuthorId(int $authorId): void
+    {
+        $this->authorId = $authorId;
     }
 
     public function getAuthor(): User

@@ -19,16 +19,6 @@ class ArticlesController
     {
         $article = Article::getById($articleId);
 
-        /*$reflector = new \ReflectionObject($article);
-        $properties = $reflector->getProperties();
-        $propertiesName = [];
-        foreach ($properties as $property)
-        {
-            $propertiesName[] = $property->name;
-        }
-        var_dump($propertiesName);*/
-
-
         if ($article === null)
         {
             $this->view->renderHtml('errors/404.php', [], 404);
@@ -47,12 +37,24 @@ class ArticlesController
             $this->view->renderHtml('errors/404.php', [], 404);
             return;
         }
-        $article->setName('Новое название статьи');
-        $article->setText('Новый текст статьи');
 
-        $article->save();
+            $article->setName('Новое ');
+            $article->setText('Новый текст ');
 
-         //$edits = Article::edit($propertiesName);
+            $article->save();
+
+    }
+
+    public function create(): void
+    {
+        $newArticle = new Article();
+        $newArticle->setName('Новое название ');
+        $newArticle->setText('Новый текст статьи ');
+        $newArticle->setAuthorId(1);
+        $newArticle->setCreatedAt(date('c'));
+
+        $articleId = $newArticle->save();
+        $this->view($articleId);
     }
 
 
