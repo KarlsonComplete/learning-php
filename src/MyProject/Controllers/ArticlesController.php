@@ -57,5 +57,12 @@ class ArticlesController
         $this->view($articleId);
     }
 
+    public function delete(int $articleId): void
+    {
+        $articles = Article::getById($articleId);
+
+        $articles->drop();
+    }
+
 
 }

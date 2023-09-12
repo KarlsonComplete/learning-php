@@ -2,7 +2,6 @@
 
 namespace Myproject\Models;
 
-use MyProject\Models\Articles\Article;
 use Myproject\Services\Db;
 
 abstract class ActiveRecordEntity
@@ -62,6 +61,17 @@ abstract class ActiveRecordEntity
         return $entities ? $entities[0] : null;
     }
 
+    public function drop(): void
+    {
+        $db = Db::getInstance();
+        $entities = $db->query(
+            'DELETE FROM`' . static::getTableName() . '` WHERE id = :id;',
+            [':id' => $this->id],
+            static::class
+        );
+        $this->id = null;
+    }
+
     private function update(array $mappedProperties): ?array
     {
         $columns2params = [];
@@ -74,7 +84,6 @@ abstract class ActiveRecordEntity
             $index++;
         }
         $sql = 'UPDATE ' . static::getTableName() . ' SET ' . implode(', ', $columns2params) . ' WHERE id = ' . $this->id;
-        var_dump($sql);
         return Db::getInstance()->query(
             $sql, $params2values, static::class
         );
@@ -82,11 +91,13 @@ abstract class ActiveRecordEntity
 
     private function insert(array $mappedProperties): string|bool
     {
+        $filteredProperties = array_filter($mappedProperties);
+
         $params = [];
         $params2values = [];
         $columns = [];
         $index = 1;
-        foreach ($mappedProperties as $column => $value) {
+        foreach ($filteredProperties as $column => $value) {
             $columns[] = $column;
             $param = ':param' . $index;
             $params[] = $param; // param1
@@ -97,8 +108,22 @@ abstract class ActiveRecordEntity
         $sql = 'INSERT INTO ' . static::getTableName() . '(' . implode(' , ', $columns) . ') VALUES(' . implode(' , ', $params) . ')';
         $db = Db::getInstance();
         $db->query($sql, $params2values, static::class);
-        return $db->lastInsertId($sql);
+        $this->id = $db->lastInsertId($sql);
+        $this->refresh();
+        return  $this->id;
+    }
 
+    private function refresh(): void
+    {
+        $objectFromDb = static::getById($this->id);
+        $reflector = new \ReflectionObject($objectFromDb);
+        $properties = $reflector->getProperties();
+
+        foreach ($properties as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            $this->$propertyName = $property->getValue($objectFromDb);
+        }
     }
 
     private function underscoreToCamelCase(string $name): string
