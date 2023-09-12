@@ -2,6 +2,7 @@
 
 namespace MyProject\Controllers;
 
+use Myproject\Exception\NotFoundException;
 use MyProject\Models\Articles\Article;
 use Myproject\View\View;
 
@@ -21,8 +22,7 @@ class ArticlesController
 
         if ($article === null)
         {
-            $this->view->renderHtml('errors/404.php', [], 404);
-            return;
+            throw new NotFoundException();
         }
 
        $this->view->renderHtml('articles/view.php', ['article' =>$article]);
@@ -34,8 +34,7 @@ class ArticlesController
 
         if ($article === null)
         {
-            $this->view->renderHtml('errors/404.php', [], 404);
-            return;
+            throw new NotFoundException();
         }
 
             $article->setName('Новое ');
