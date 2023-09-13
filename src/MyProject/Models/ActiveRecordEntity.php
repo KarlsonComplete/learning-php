@@ -25,6 +25,23 @@ abstract class ActiveRecordEntity
         return $db->query('SELECT * FROM `' . static::getTableName() . '`;', [], static::class);
     }
 
+    public static function findOneByColumn(string $columnName, $value): ?self
+    {
+        $db = Db::getInstance();
+        $result = $db->query(
+            'SELECT * FROM `' . static::getTableName() . '` WHERE `' . $columnName . '` =:value LIMIT 1;',
+            [':value' => $value],
+            static::class
+        );
+
+        if ($result === [])
+        {
+            return null;
+        }
+
+        return $result[0];
+    }
+
     public function save(): bool|string|array
     {
         $mappedProperties = $this->mapPropertiesToDbFormat();
