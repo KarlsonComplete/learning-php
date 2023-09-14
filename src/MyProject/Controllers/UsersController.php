@@ -4,6 +4,8 @@ namespace MyProject\Controllers;
 
 use Myproject\Exception\InvalidArgumentException;
 use MyProject\Models\Users\User;
+use MyProject\Models\Users\UserActivationService;
+use Myproject\Services\EmailSender;
 use Myproject\View\View;
 
 class UsersController
@@ -28,6 +30,13 @@ class UsersController
 
             if ($user instanceof User)
             {
+                $code = UserActivationService::createActivationCode($user);
+
+                EmailSender::send($user, 'Активация', 'userActivation.php',[
+                    'userId' => $user->getId(),
+                    'code' => $code
+                ]);
+
                 $this->view->renderHtml('users/signUpSuccessful.php');
             }
         }
@@ -35,6 +44,18 @@ class UsersController
             $this->view->renderHtml('users/signUp.php');
         }
 
+
+    }
+
+    public function activate(int $userId, string $activationCode)
+    {
+        $user = User::getById($userId);
+        $isCodeValid = UserActivationService::checkActivationCode($user, $activationCode);
+        if ($isCodeValid)
+        {
+            $user->activate();
+            echo 'Ok';
+        }
 
     }
 

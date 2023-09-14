@@ -33,7 +33,6 @@ class User extends ActiveRecordEntity
 
     public static function signUp(array $userData): User
     {
-        var_dump($userData);
 
         if (static::findOneByColumn('nickname', $userData['nickname']) !== null) {
             throw new InvalidArgumentException('Пользователь с таким nickname уже существует');
@@ -80,6 +79,12 @@ class User extends ActiveRecordEntity
 
         return $user;
 
+    }
+
+    public function activate(): void
+    {
+        $this->isConfirmed = true;
+        $this->save();
     }
 
     protected static function getTableName(): string

@@ -9,4 +9,5 @@ return [
     '~^articles/create$~' => [\MyProject\Controllers\ArticlesController::class , 'create'],
     '~^articles/(\d+)/delete$~' => [\MyProject\Controllers\ArticlesController::class, 'delete'],
     '~^users/register$~' => [\MyProject\Controllers\UsersController::class, 'signUp'],
-];
+    '~^users/(\d+)/activate/(.+)$~' => [\MyProject\Controllers\UsersController::class, 'activate'],
+    ];
