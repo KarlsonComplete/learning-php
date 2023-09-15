@@ -38,7 +38,9 @@ class Db
 
     public function query(string $sql, $params = [], string $className = 'stdClass'): ?array
     {
+        // Функция prepare подготавливает запрос к выполнению и возвращает связанный с этим запросом объект
         $sth = $this->pdo->prepare($sql);
+        //Функция execute запускает подготовленный запрос на выполнение
         $result = $sth->execute($params);
 
         if (false === $result)

@@ -39,3 +39,10 @@ catch (\Myproject\Exception\NotFoundException $notFoundException)
     $view->renderHtml('404.php', ['error' => $notFoundException->getMessage()], 404);
 }
 
+/*if(mail('karlsonfly2001@gmail.com', 'Тема письма', 'Текст письма', 'From: gafaruon@gmail.com'))
+{
+    echo 'Удачно';
+}else
+{
+    echo 'Неудачно';
+}*/
