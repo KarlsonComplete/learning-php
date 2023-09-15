@@ -31,6 +31,11 @@ class User extends ActiveRecordEntity
         return $this->nickname;
     }
 
+    public function isActivated(): bool
+    {
+        return $this->isConfirmed;
+    }
+
     public static function signUp(array $userData): User
     {
 

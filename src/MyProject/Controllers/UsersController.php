@@ -2,7 +2,9 @@
 
 namespace MyProject\Controllers;
 
+use Myproject\Exception\ActivationException;
 use Myproject\Exception\InvalidArgumentException;
+use Myproject\Exception\NotFoundUserException;
 use MyProject\Models\Users\User;
 use MyProject\Models\Users\UserActivationService;
 use Myproject\Services\EmailSender;
@@ -19,7 +21,6 @@ class UsersController
 
     public function signUp()
     {
-
         if (!empty($_POST)) {
             try {
                 $user = User::signUp($_POST);
@@ -43,20 +44,29 @@ class UsersController
         else{
             $this->view->renderHtml('users/signUp.php');
         }
-
-
     }
 
     public function activate(int $userId, string $activationCode)
     {
-        $user = User::getById($userId);
-        $isCodeValid = UserActivationService::checkActivationCode($user, $activationCode);
-        if ($isCodeValid)
-        {
-            $user->activate();
-            echo 'Ok';
-        }
+       try {
 
+           $user = User::getById($userId);
+           if ($user === null) {
+               throw new ActivationException('Пользователь не найден');
+           }
+           if ($user->isActivated()) {
+               throw new ActivationException('Пользователь уже активирован');
+           }
+           $isCodeValid = UserActivationService::checkActivationCode($user, $activationCode);
+           if ($user !== null && $isCodeValid === true) {
+               $user->activate();
+               UserActivationService::deleteActivationCode($user, $activationCode);
+               $this->view->renderHtml('users/AccountActivated.php');
+           }
+       }catch (ActivationException $e)
+       {
+           $this->view->renderHtml('errors/activationError.php', ['error' => $e->getMessage()], 422);
+       }
     }
 
 }
