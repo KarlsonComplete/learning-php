@@ -59,14 +59,6 @@ class ArticlesController extends AbstractController
             }
         }
         $this->view->renderHtml('articles/add.php');
-        /*$newArticle = new Article();
-        $newArticle->setName('Новое название ');
-        $newArticle->setText('Новый текст статьи ');
-        $newArticle->setAuthorId(1);
-        $newArticle->setCreatedAt(date('c'));
-
-        $articleId = $newArticle->save();
-        $this->view($articleId);*/
     }
 
     public function delete(int $articleId): void
