@@ -4,12 +4,10 @@ namespace MyProject\Controllers;
 
 use Myproject\Exception\ActivationException;
 use Myproject\Exception\InvalidArgumentException;
-use Myproject\Exception\NotFoundUserException;
 use MyProject\Models\Users\User;
 use MyProject\Models\Users\UserActivationService;
 use Myproject\Models\Users\UsersAuthService;
 use Myproject\Services\EmailSender;
-use Myproject\View\View;
 
 class UsersController extends AbstractController
 {
@@ -31,6 +29,12 @@ class UsersController extends AbstractController
         else{
             $this->view->renderHtml('users/login.php');
         }
+    }
+
+    public function logOut(): void
+    {
+       UsersAuthService::deleteToken();
+       header('Location: /www/');
     }
 
     public function signUp()
