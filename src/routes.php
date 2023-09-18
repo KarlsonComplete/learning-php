@@ -10,4 +10,6 @@ return [
     '~^articles/(\d+)/delete$~' => [\MyProject\Controllers\ArticlesController::class, 'delete'],
     '~^users/register$~' => [\MyProject\Controllers\UsersController::class, 'signUp'],
     '~^users/(\d+)/activate/(.+)$~' => [\MyProject\Controllers\UsersController::class, 'activate'],
+    '~^users/authorization$~' => [\MyProject\Controllers\UsersController::class, 'login'],
+    '~^users/logout$~' => [\MyProject\Controllers\UsersController::class, 'logOut'],
     ];
