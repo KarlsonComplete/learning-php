@@ -4,6 +4,7 @@ namespace MyProject\Models\Articles;
 
 use Myproject\Models\ActiveRecordEntity;
 use MyProject\Models\Users\User;
+use Myproject\Exception\InvalidArgumentException;
 
 class Article extends ActiveRecordEntity
 {
@@ -68,6 +69,28 @@ class Article extends ActiveRecordEntity
         $this->authorId = $authorId;
     }
 
+    public static function create(array $articlesData, User $author):Article
+    {
+        if (empty($articlesData['name']))
+        {
+            throw new InvalidArgumentException('Введите название статьи');
+        }
+        if (empty($articlesData['text']))
+        {
+            throw new InvalidArgumentException('Введите текст');
+        }
+
+        $article = new Article();
+
+        $article->setAuthorId($author->id);
+        $article->setName($articlesData['name']);
+        $article->setText($articlesData['text']);
+
+        $article->save();
+
+        return $article;
+    }
+
     public function getAuthor(): User
     {
         return User::getById($this->authorId);
@@ -77,4 +100,6 @@ class Article extends ActiveRecordEntity
     {
         return 'articles';
     }
+
+
 }

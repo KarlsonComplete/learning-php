@@ -29,6 +29,14 @@ class User extends ActiveRecordEntity
     /**
      * @return string
      */
+    public function getRole(): string
+    {
+        return $this->role;
+    }
+
+    /**
+     * @return string
+     */
     public function getAuthToken(): string
     {
         return $this->authToken;
@@ -69,13 +77,11 @@ class User extends ActiveRecordEntity
             throw new InvalidArgumentException('Пользователь с таким nickname не найден');
         }
 
-        if (!password_verify($userData['password'], $user->getPasswordHash()))
-        {
+        if (!password_verify($userData['password'], $user->getPasswordHash())) {
             throw new InvalidArgumentException('Неправильный пароль');
         }
 
-        if (!$user->isActivated())
-        {
+        if (!$user->isActivated()) {
             throw new InvalidArgumentException('Пользователь не подтверждён');
         }
 
@@ -135,6 +141,11 @@ class User extends ActiveRecordEntity
 
     }
 
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
     public function activate(): void
     {
         $this->isConfirmed = true;
@@ -148,6 +159,6 @@ class User extends ActiveRecordEntity
 
     protected static function getTableName(): string
     {
-       return 'users';
+        return 'users';
     }
 }

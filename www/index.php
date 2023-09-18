@@ -38,3 +38,13 @@ catch (\Myproject\Exception\NotFoundException $notFoundException)
     $view = new Myproject\View\View(__DIR__ . '/../templates/errors');
     $view->renderHtml('404.php', ['error' => $notFoundException->getMessage()], 404);
 }
+catch (\Myproject\Exception\UnauthorizedException $unauthorizedException)
+{
+    $view = new \MyProject\View\View(__DIR__ . '/../templates/errors');
+    $view->renderHtml('401.php', ['error' => $unauthorizedException->getMessage()], 401);
+}
+catch (\Myproject\Exception\ForbiddenException $forbiddenException)
+{
+    $view = new \MyProject\View\View(__DIR__ . '/../templates/errors');
+    $view->renderHtml('403.php', ['error' => $forbiddenException->getMessage(), 'user' => \Myproject\Models\Users\UsersAuthService::getUserByToken()], 403);
+}

@@ -5,6 +5,7 @@
     <ul>
         <li><a href="/www/index.php/main">Главная страница</a></li>
         <li><a href="/about-me">Обо мне</a></li>
+        <li><a href="/www/articles/create">Создать статью</a></li>
     </ul>
 </td>
 </tr>
