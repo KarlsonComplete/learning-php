@@ -91,6 +91,26 @@ class Article extends ActiveRecordEntity
         return $article;
     }
 
+    public function edit(array $articlesData):Article
+    {
+
+        if (empty($articlesData['name']))
+        {
+            throw new InvalidArgumentException('Введите название статьи');
+        }
+        if (empty($articlesData['text']))
+        {
+            throw new InvalidArgumentException('Введите текст');
+        }
+
+        $this->setName($articlesData['name']);
+        $this->setText($articlesData['text']);
+
+        $this->save();
+
+        return $this;
+    }
+
     public function getAuthor(): User
     {
         return User::getById($this->authorId);
