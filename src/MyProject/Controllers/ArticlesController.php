@@ -7,8 +7,6 @@ use Myproject\Exception\InvalidArgumentException;
 use Myproject\Exception\NotFoundException;
 use Myproject\Exception\UnauthorizedException;
 use MyProject\Models\Articles\Article;
-use Myproject\Models\Users\UsersAuthService;
-use Myproject\View\View;
 
 
 class ArticlesController extends AbstractController
@@ -32,11 +30,28 @@ class ArticlesController extends AbstractController
             throw new NotFoundException();
         }
 
-        $article->setName('Новое ');
-        $article->setText('Новый текст ');
+        if ($this->user === null)
+        {
+            throw new UnauthorizedException();
+        }
 
-        $article->save();
+        if (!$this->user->isAdmin()) {
+            throw new ForbiddenException('Недостаточно прав пользователя!');
+        }
 
+        if (!empty($_POST))
+        {
+            try {
+                $article->edit($_POST);
+            }catch (InvalidArgumentException $invalidArgumentException) {
+                $this->view->renderHtml('articles/edit.php', ['error' => $invalidArgumentException->getMessage(), 'article' => $article]);
+                return;
+            }
+
+            header('Location /www/articles/' . $article->getId() . '/edit', true, 302);
+            exit();
+        }
+        $this->view->renderHtml('articles/edit.php', ['article' => $article]);
     }
 
     public function create(): void
