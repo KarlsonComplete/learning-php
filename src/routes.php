@@ -12,4 +12,5 @@ return [
     '~^users/(\d+)/activate/(.+)$~' => [\MyProject\Controllers\UsersController::class, 'activate'],
     '~^users/authorization$~' => [\MyProject\Controllers\UsersController::class, 'login'],
     '~^users/logout$~' => [\MyProject\Controllers\UsersController::class, 'logOut'],
+    '~^articles/(\d+)/comments$~' =>  [\MyProject\Controllers\ArticlesController::class, 'comment'],
     ];

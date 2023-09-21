@@ -7,6 +7,7 @@ use Myproject\Exception\InvalidArgumentException;
 use Myproject\Exception\NotFoundException;
 use Myproject\Exception\UnauthorizedException;
 use MyProject\Models\Articles\Article;
+use Myproject\Models\Comments\Comment;
 
 
 class ArticlesController extends AbstractController
@@ -74,6 +75,16 @@ class ArticlesController extends AbstractController
             }
         }
         $this->view->renderHtml('articles/add.php');
+    }
+
+    public function comment(int $articleId): void
+    {
+        $article = Article::getById($articleId);
+
+        if (!empty($_POST))
+        {
+            $comment = Comment::create($_POST, $this->user, $article);
+        }
     }
 
     public function delete(int $articleId): void
