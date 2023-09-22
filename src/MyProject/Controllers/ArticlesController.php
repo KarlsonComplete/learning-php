@@ -31,8 +31,7 @@ class ArticlesController extends AbstractController
             throw new NotFoundException();
         }
 
-        if ($this->user === null)
-        {
+        if ($this->user === null) {
             throw new UnauthorizedException();
         }
 
@@ -40,11 +39,10 @@ class ArticlesController extends AbstractController
             throw new ForbiddenException('Недостаточно прав пользователя!');
         }
 
-        if (!empty($_POST))
-        {
+        if (!empty($_POST)) {
             try {
                 $article->edit($_POST);
-            }catch (InvalidArgumentException $invalidArgumentException) {
+            } catch (InvalidArgumentException $invalidArgumentException) {
                 $this->view->renderHtml('articles/edit.php', ['error' => $invalidArgumentException->getMessage(), 'article' => $article]);
                 return;
             }
@@ -81,13 +79,19 @@ class ArticlesController extends AbstractController
     {
         $article = Article::getById($articleId);
 
-        if (!empty($_POST))
-        {
-            $comment = Comment::create($_POST, $this->user, $article);
+        if (!empty($_POST)) {
+            try {
+                $comment = Comment::create($_POST, $this->user, $article);
+            } catch (InvalidArgumentException $invalidArgumentException) {
+                $this->view->renderHtml('errors/emptyDataError.php', ['error' => $invalidArgumentException->getMessage()]);
+                return;
+            }
         }
 
-        header('Location: /www/articles/'. $article->getId() . '#comment'. $comment->getId());
+        header('Location: /www/articles/' . $article->getId() . '#comment' . $comment->getId(),true,302);
+        exit();
     }
+
 
     public function delete(int $articleId): void
     {

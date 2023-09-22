@@ -2,6 +2,7 @@
 
 namespace Myproject\Models\Comments;
 
+use Myproject\Exception\InvalidArgumentException;
 use Myproject\Models\ActiveRecordEntity;
 use MyProject\Models\Articles\Article;
 use MyProject\Models\Users\User;
@@ -82,8 +83,13 @@ class Comment extends ActiveRecordEntity
     }
 
 
-    public static function create(array $commentsData,User $author, Article $article)
+    public static function create(array $commentsData,User $author, Article $article): Comment
     {
+        if (empty($commentsData['comments']))
+        {
+            throw new InvalidArgumentException('Невозможно отправить пустой комментарий');
+        }
+
         $comment = new Comment();
 
         $comment->setAuthorId($author->id);
@@ -93,6 +99,26 @@ class Comment extends ActiveRecordEntity
         $comment->save();
 
         return $comment;
+    }
+
+    public function edit(array $commentsData):Comment
+    {
+        var_dump($commentsData);
+        if (empty($commentsData['comments']))
+        {
+            throw new InvalidArgumentException('Невозможно отправить пустой комментарий');
+        }
+        if ($commentsData['comments'] === $this->getComments())
+        {
+            throw new InvalidArgumentException('Вы пытаетесь сохранить тот же комментарий');
+        }
+
+        $this->setComments($commentsData['comments']);
+        $this->setCreatedAt(date('c'));
+
+        $this->save();
+
+        return $this;
     }
 
     public static function getCommentsByArticleId($articleId): ?array
