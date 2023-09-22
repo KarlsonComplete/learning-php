@@ -15,12 +15,12 @@ class ArticlesController extends AbstractController
     public function view(int $articleId)
     {
         $article = Article::getById($articleId);
-
+        $comments = Comment::getCommentsByArticleId($articleId);
         if ($article === null) {
             throw new NotFoundException();
         }
 
-        $this->view->renderHtml('articles/view.php', ['article' => $article]);
+        $this->view->renderHtml('articles/view.php', ['article' => $article, 'comments' => $comments]);
     }
 
     public function edit(int $articleId)
@@ -85,6 +85,8 @@ class ArticlesController extends AbstractController
         {
             $comment = Comment::create($_POST, $this->user, $article);
         }
+
+        header('Location: /www/articles/'. $article->getId() . '#comment'. $comment->getId());
     }
 
     public function delete(int $articleId): void

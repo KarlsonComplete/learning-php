@@ -27,13 +27,15 @@ abstract class ActiveRecordEntity
 
     public static function findOneByColumn(string $columnName, $value): ?self
     {
+        var_dump($columnName);
+        var_dump($value);
         $db = Db::getInstance();
         $result = $db->query(
             'SELECT * FROM `' . static::getTableName() . '` WHERE `' . $columnName . '` =:value LIMIT 1;',
             [':value' => $value],
             static::class
         );
-
+    var_dump($result);
         if ($result === [])
         {
             return null;
@@ -76,6 +78,19 @@ abstract class ActiveRecordEntity
             static::class
         );
         return $entities ? $entities[0] : null;
+    }
+
+    public static function getArrayById(int $id, string $column): ?array
+    {
+
+        $column_string = $column . '=' . ':' . $column . ';';
+        $db = Db::getInstance();
+        $entities = $db->query(
+            'SELECT * FROM`' . static::getTableName() . '` WHERE ' . $column_string,
+            [':'.$column => $id],
+            static::class
+        );
+        return $entities ?: null;
     }
 
     public function drop(): void

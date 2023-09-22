@@ -81,6 +81,7 @@ class Comment extends ActiveRecordEntity
         $this->createdAt = $createdAt;
     }
 
+
     public static function create(array $commentsData,User $author, Article $article)
     {
         $comment = new Comment();
@@ -92,6 +93,16 @@ class Comment extends ActiveRecordEntity
         $comment->save();
 
         return $comment;
+    }
+
+    public static function getCommentsByArticleId($articleId): ?array
+    {
+        return self::getArrayById($articleId,'article_id');
+    }
+
+    public function getAuthor(): User
+    {
+        return User::getById($this->authorId);
     }
 
     protected static function getTableName(): string
