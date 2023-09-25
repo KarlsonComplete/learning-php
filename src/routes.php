@@ -14,4 +14,7 @@ return [
     '~^users/logout$~' => [\MyProject\Controllers\UsersController::class, 'logOut'],
     '~^articles/(\d+)/comments$~' =>  [\MyProject\Controllers\ArticlesController::class, 'comment'],
     '~^comments/(\d+)/edit$~' => [\MyProject\Controllers\CommentsController::class, 'edit'],
+    '~^admin$~' => [\MyProject\Controllers\AdminController::class, 'viewAdmin'],
+    '~^admin/articles$~' => [\MyProject\Controllers\AdminController::class, 'viewArticles'],
+    '~^admin/comments$~' => [\MyProject\Controllers\AdminController::class, 'viewComments'],
     ];
