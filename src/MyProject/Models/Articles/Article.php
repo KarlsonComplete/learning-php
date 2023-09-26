@@ -48,6 +48,11 @@ class Article extends ActiveRecordEntity
         return $this->text;
     }
 
+    public function getShortText(): string
+    {
+     return substr($this->text, 0 ,100);
+    }
+
     public function getAuthorId(): int
     {
         return $this->authorId;
