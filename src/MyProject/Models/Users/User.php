@@ -5,6 +5,7 @@ namespace MyProject\Models\Users;
 use Myproject\Exception\InvalidArgumentException;
 use Myproject\Models\ActiveRecordEntity;
 
+
 class User extends ActiveRecordEntity
 {
     protected string $nickname;
@@ -20,6 +21,24 @@ class User extends ActiveRecordEntity
     protected string $authToken;
 
     protected string $createdAt;
+
+    protected ?string $imgName = null;
+
+    /**
+     * @return string|null
+     */
+    public function getImgName(): string|null
+    {
+        return $this->imgName;
+    }
+
+    /**
+     * @param string $imgName
+     */
+    public function setImgName(string $imgName): void
+    {
+        $this->imgName = $imgName;
+    }
 
     public function getEmail(): string
     {
@@ -77,10 +96,8 @@ class User extends ActiveRecordEntity
             throw new InvalidArgumentException('Пользователь с таким nickname не найден');
         }
 
-        if ($user->isAdmin() && $userData['password'] === $user->getPasswordHash())
-        {
-        }
-        else{
+        if ($user->isAdmin() && $userData['password'] === $user->getPasswordHash()) {
+        } else {
             if (!password_verify($userData['password'], $user->getPasswordHash())) {
                 throw new InvalidArgumentException('Неправильный пароль');
             }
@@ -144,6 +161,18 @@ class User extends ActiveRecordEntity
 
         return $user;
 
+    }
+
+    public static function updatePhoto(User $user, string $imgFileName, string $uploaded_file, string $destination_path): void
+    {
+        $moved = move_uploaded_file($uploaded_file, $destination_path . $imgFileName);
+        if ($moved) {
+            echo "Successfully uploaded";
+        } else {
+            echo "Not uploaded because of error #" . $_FILES['userfile']['error'];
+        }
+        $user->setImgName($imgFileName);
+        $user->save();
     }
 
     public function isAdmin(): bool
