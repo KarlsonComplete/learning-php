@@ -4,7 +4,6 @@ namespace MyProject\Controllers;
 
 use MyProject\Models\Articles\Article;
 use Myproject\Models\Users\UsersAuthService;
-use Myproject\View\View;
 
 class MainController extends AbstractController
 {

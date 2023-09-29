@@ -14,7 +14,6 @@ class Db
 
     private function __construct()
     {
-
         $dbPathOptions  = (require __DIR__ . '/../../settings.php')['db'];
         try {
             $this->pdo = new \PDO(

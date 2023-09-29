@@ -9,6 +9,7 @@ use MyProject\Models\Users\UserActivationService;
 use Myproject\Models\Users\UsersAuthService;
 use Myproject\Services\EmailSender;
 
+
 class UsersController extends AbstractController
 {
     public function login()
@@ -29,6 +30,19 @@ class UsersController extends AbstractController
         else{
             $this->view->renderHtml('users/login.php');
         }
+    }
+
+    public function account()
+    {
+        if (!empty($_FILES))
+        {
+            $uploaded_file = $_FILES['userfile']['tmp_name'];
+            $destination_path = __DIR__ . '../../../../src/img/';
+            $fileName = $_FILES['userfile']['name'];
+            $error = $_FILES['userfile']['error'];
+            User::updatePhoto($this->user, $fileName,$uploaded_file, $destination_path);
+        }
+        $this->view->renderHtml('users/account.php');
     }
 
     public function logOut(): void

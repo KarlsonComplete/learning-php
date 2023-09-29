@@ -31,8 +31,9 @@
         ?>
         <div id="comment<?php echo $comment->getId() ?>" class="media d-block d-md-flex mt-1 font09">
             <div class="media-body text-md-left ml-md-2 ml-0">
-                <div class="mb-0 mt-0 font-weight-bold font08"><a
-                            href=""><?php echo $comment->getAuthor()->getNickname() ?></a>
+                <div class="mb-0 mt-0 font-weight-bold font08">
+                    <img src="/src/img/<?php echo $comment->getAuthor()->getImgName();?>" width="50" height="50" alt="">
+                    <a href=""><?php echo $comment->getAuthor()->getNickname() ?></a>
                     <span style="font-weight: 100;"
                           class="ml-2 hideOnMobile font07"><?php echo $comment->getCreatedAt() ?></span>
                 </div>

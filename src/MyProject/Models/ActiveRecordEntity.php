@@ -19,23 +19,22 @@ abstract class ActiveRecordEntity
         $this->$camelCaseName = $value;
     }
 
-    public static function findAll(): array
+    public static function findAll(?string $condition=null): array
     {
         $db = Db::getInstance();
-        return $db->query('SELECT * FROM `' . static::getTableName() . '`;', [], static::class);
+        return $db->query('SELECT * FROM ' . static::getTableName() . $condition .  ';', [], static::class);
     }
+
 
     public static function findOneByColumn(string $columnName, $value): ?self
     {
-        var_dump($columnName);
-        var_dump($value);
         $db = Db::getInstance();
         $result = $db->query(
             'SELECT * FROM `' . static::getTableName() . '` WHERE `' . $columnName . '` =:value LIMIT 1;',
             [':value' => $value],
             static::class
         );
-    var_dump($result);
+
         if ($result === [])
         {
             return null;

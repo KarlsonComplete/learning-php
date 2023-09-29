@@ -103,7 +103,6 @@ class Comment extends ActiveRecordEntity
 
     public function edit(array $commentsData):Comment
     {
-        var_dump($commentsData);
         if (empty($commentsData['comments']))
         {
             throw new InvalidArgumentException('Невозможно отправить пустой комментарий');
