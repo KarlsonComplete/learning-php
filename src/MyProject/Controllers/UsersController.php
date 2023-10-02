@@ -7,6 +7,7 @@ use Myproject\Exception\InvalidArgumentException;
 use MyProject\Models\Users\User;
 use MyProject\Models\Users\UserActivationService;
 use Myproject\Models\Users\UsersAuthService;
+use MyProject\Models\Users\UsersRegistrationService;
 use Myproject\Services\EmailSender;
 
 
@@ -17,7 +18,7 @@ class UsersController extends AbstractController
         if (!empty($_POST))
         {
             try {
-                $user = User::login($_POST);
+                $user = UsersAuthService::login($_POST);
                 UsersAuthService::createToken($user);
                 header('Location: /www/');
                 exit();
@@ -55,7 +56,7 @@ class UsersController extends AbstractController
     {
         if (!empty($_POST)) {
             try {
-                $user = User::signUp($_POST);
+                $user = UsersRegistrationService::signUp($_POST);
             } catch (InvalidArgumentException $invalidArgumentException) {
                 $this->view->renderHtml('users/signUp.php', ['error' => $invalidArgumentException->getMessage()]);
                 return;
@@ -91,7 +92,7 @@ class UsersController extends AbstractController
            }
            $isCodeValid = UserActivationService::checkActivationCode($user, $activationCode);
            if ($user !== null && $isCodeValid === true) {
-               $user->activate();
+               UsersRegistrationService::activate($user);
                UserActivationService::deleteActivationCode($user, $activationCode);
                $this->view->renderHtml('users/AccountActivated.php');
            }

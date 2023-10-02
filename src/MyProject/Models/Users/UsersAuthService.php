@@ -2,8 +2,44 @@
 
 namespace Myproject\Models\Users;
 
-class UsersAuthService
+use Myproject\Exception\InvalidArgumentException;
+use Myproject\Models\ActiveRecordEntity;
+
+class UsersAuthService extends User
 {
+    public static function login(array $userData): ActiveRecordEntity
+    {
+        if (empty($userData['password'])) {
+            throw new InvalidArgumentException('Введите пароль');
+        }
+
+        if (mb_strlen($userData['password']) < 5) {
+            throw new InvalidArgumentException('Пароль должен быть не менее 5 символов');
+        }
+
+        $user = static::findOneByColumn('nickname', $userData['nickname']);
+
+        if ($user === null) {
+            throw new InvalidArgumentException('Пользователь с таким nickname не найден');
+        }
+
+        if ($user->isAdmin() && $userData['password'] === $user->getPasswordHash()) {
+        } else {
+            if (!password_verify($userData['password'], $user->getPasswordHash())) {
+                throw new InvalidArgumentException('Неправильный пароль');
+            }
+        }
+
+        if (!$user->isActivated()) {
+            throw new InvalidArgumentException('Пользователь не подтверждён');
+        }
+
+        $user->refreshAuthToken();
+        $user->save();
+
+        return $user;
+    }
+
     public static function createToken(User $user): void
     {
         $token = $user->getId() . ':' . $user->getAuthToken();
